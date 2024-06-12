@@ -10,11 +10,11 @@ def closest(color):
     distances = np.sqrt(np.sum((colors-color)**2,axis=1))
     return np.where(distances == np.amin(distances))[0][0]
 
-img_folder = 'image-holder'
+img_folder = '../../art/'
 out_folder = '../../src/art/'
 img_file = os.listdir(img_folder)[0]
 print(img_file)
-img_path = os.path.join(os.path.basename(img_folder), os.path.basename(img_file))
+img_path = os.path.join(os.path.dirname(img_folder), os.path.basename(img_file))
 
 img = Image.open(img_path, 'r')
 img.putalpha(255)
