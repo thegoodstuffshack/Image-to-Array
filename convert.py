@@ -11,7 +11,9 @@ def closest(color):
     return np.where(distances == np.amin(distances))[0][0]
 
 img_folder = 'image-holder'
+out_folder = '../../src/art/'
 img_file = os.listdir(img_folder)[0]
+print(img_file)
 img_path = os.path.join(os.path.basename(img_folder), os.path.basename(img_file))
 
 img = Image.open(img_path, 'r')
@@ -36,7 +38,7 @@ for i in img_val:
     img_out.putpixel((xpos, ypos), ref_val[ndx])
     inc += 1
 
-final = ', '.join(str(x) for x in final_val)
-with open("outfile.txt", "w") as outfile:
+final = img_file + ": db \\\n" + (', '.join(str(x) for x in final_val))
+with open(out_folder + img_file + ".asm", "w") as outfile:
     outfile.write(final)
-img_out.save('output-' + os.path.basename(img_file))
+# img_out.save('output-' + os.path.basename(img_file))
