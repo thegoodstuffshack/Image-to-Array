@@ -10,8 +10,23 @@ def closest(color):
     distances = np.sqrt(np.sum((colors-color)**2,axis=1))
     return np.where(distances == np.amin(distances))[0][0]
 
+def makeInclude():
+    try: os.remove(out_folder + 'include.asm') 
+    except: pass
+    include = ''
+    count = 0
+    for i in os.listdir(out_folder):
+        include += '%include \'' + out_basefolder + os.listdir(out_folder)[count] + '\'\n'
+        count += 1
+    
+    with open(out_folder + 'include.asm', "w") as includefile:
+        includefile.write(include)
+    return
+
+
 img_folder = '../../art/'
-out_folder = '../../src/art/'
+out_basefolder = 'src/art/'
+out_folder = '../../' + out_basefolder
 img_file = os.listdir(img_folder)[0]
 print(img_file)
 img_path = os.path.join(os.path.dirname(img_folder), os.path.basename(img_file))
@@ -38,7 +53,9 @@ for i in img_val:
     img_out.putpixel((xpos, ypos), ref_val[ndx])
     inc += 1
 
-final = img_file + ": db \\\n" + (', '.join(str(x) for x in final_val))
-with open(out_folder + img_file + ".asm", "w") as outfile:
+final = os.path.splitext(img_file)[0] + ": db \\\n" + (', '.join(str(x) for x in final_val))
+with open(out_folder + os.path.splitext(img_file)[0] + ".asm", "w") as outfile:
     outfile.write(final)
 # img_out.save('output-' + os.path.basename(img_file))
+
+makeInclude()
