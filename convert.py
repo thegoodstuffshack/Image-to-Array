@@ -23,39 +23,35 @@ def makeInclude():
         includefile.write(include)
     return
 
+def getArray(img_path):
+    final_val = []
+    img = Image.open(img_path, 'r')
+    img.putalpha(255)
+    img_val = list(img.getdata())
+    
+    inc = 0
+    for i in img_val:
+        ndx = closest(i)
+        final_val.append(ndx)
+        inc += 1
+    return final_val
+
 
 img_folder = '../../art/'
 out_basefolder = 'src/art/'
 out_folder = '../../' + out_basefolder
-img_file = os.listdir(img_folder)[0]
-print(img_file)
-img_path = os.path.join(os.path.dirname(img_folder), os.path.basename(img_file))
-
-img = Image.open(img_path, 'r')
-img.putalpha(255)
-img_val = list(img.getdata())
-
 ref = Image.open('ref.png', 'r')
 ref_val = list(ref.getdata())
 colors = np.array(ref_val)
 
-final_val = []
-
-w, h = img.size
-img_out = Image.new(mode='RGB', size=(w, h))
-
-inc = 0
-for i in img_val:
-    ndx = closest(i)
-    final_val.append(ndx)
-    xpos = inc % w
-    ypos = inc // w
-    img_out.putpixel((xpos, ypos), ref_val[ndx])
-    inc += 1
-
-final = os.path.splitext(img_file)[0] + ": db \\\n" + (', '.join(str(x) for x in final_val))
-with open(out_folder + os.path.splitext(img_file)[0] + ".asm", "w") as outfile:
-    outfile.write(final)
-# img_out.save('output-' + os.path.basename(img_file))
+counter = 0
+for files in os.listdir(img_folder):
+    img_file = os.listdir(img_folder)[counter]
+    print(img_file)
+    img_path = os.path.join(os.path.dirname(img_folder), os.path.basename(img_file))
+    final = os.path.splitext(img_file)[0] + ": db \\\n" + (', '.join(str(x) for x in getArray(img_path)))
+    with open(out_folder + os.path.splitext(img_file)[0] + ".asm", "w") as outfile:
+        outfile.write(final)
+    counter += 1
 
 makeInclude()
